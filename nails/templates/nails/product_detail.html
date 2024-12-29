@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Sally's Nail Hut</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f3e5ab; /* Vanilla Cream background */
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white; /* Text color for the brand */
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important; /* Ensures text color is white */
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #f3e5ab; /* Change color on hover */
+        }
+
+        .container {
+            margin-top: 800px; /* Space below navbar */
+        }
+
+        .product-detail-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .product-detail-img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-detail-info {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .product-detail-info h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .product-detail-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .product-detail-img,
+            .product-detail-info {
+                max-width: 100%;
+            }
+        }
+        .mini-box {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            margin: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">Sally's Nail Hut</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'measurement' %}">Measurement</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="authDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
+                            <li><a class="dropdown-item" href="{% url 'signin' %}">Sign In</a></li>
+                            {% if user.is_authenticated %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <!-- Cart Icon -->
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="{% url 'cart' %}">
+                            <i class="bi bi-cart-fill" style="font-size: 1.5rem;"></i>
+                            <span class="cart-badge" id="cart-count">0</span>
+                        </a>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Product Detail Section -->
+    <div class="container product-detail-container mt-5">
+        <div>
+            <img src="{{ product.photo.url }}" class="product-detail-img" alt="{{ product.name }}">
+        </div>
+        <div class="product-detail-info">
+            <h1>{{ product.name }}</h1>
+            <p class="product-price">{{ product.price }} EGP</p>
+            <p>{{ product.description }}</p>
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="number" id="quantity" class="form-control quantity-input" value="1" min="1">
+            <label for="measurement" class="form-label">Measurement</label>
+            <input type="number" class="mini-box" id="measurement1" placeholder="0">
+            <input type="number" class="mini-box" id="measurement2" placeholder="0">
+            <input type="number" class="mini-box" id="measurement3" placeholder="0">
+            <input type="number" class="mini-box" id="measurement4" placeholder="0">
+            <input type="number" class="mini-box" id="measurement5" placeholder="0">
+            <h6>Read the measurements instructions</h6>
+            <button class="btn btn-primary mt-3" onclick="addToCart('{{ product.name }}', {{ product.price }}, '{{ product.photo.url }}')">Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript for Cart -->
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cartCount = cart.length;
+
+        document.getElementById('cart-count').textContent = cartCount;
+
+        function addToCart(name, price, photo) {
+            const quantity = document.getElementById('quantity').value;
+            const measurements = [
+                document.getElementById('measurement1').value,
+                document.getElementById('measurement2').value,
+                document.getElementById('measurement3').value,
+                document.getElementById('measurement4').value,
+                document.getElementById('measurement5').value,
+            ];
+            cart.push({ name, price, photo, quantity, measurements });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            cartCount++;
+            document.getElementById('cart-count').textContent = cartCount;
+            alert(`${name} (Quantity: ${quantity}) has been added to your cart.`);
+        }
+    </script>
+</body>
+</html>

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,7 +57,7 @@ ROOT_URLCONF = 'web101.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,3 +124,28 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = '/'  # Redirect to the homepage after login
+LOGIN_URL = '/signin/'   # Redirect to the sign-in page if not logged in
+MEDIA_URL = '/media/'  # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')   # Directory where media files are stored
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+        'OPTIONS': {
+            #'timeout': 20,  # Set timeout in seconds
+        },
+    }
+}
+#BASE_DIR = Path(__file__).resolve().parent.parent  # This gets the root directory of your project
+#DATABASES = {
+    #'default': {
+        #'ENGINE': 'django.db.backends.mysql',
+        #'NAME': 'web101',  # Replace with your MySQL database name
+        #'USER': 'root',       # Replace with your MySQL username
+        #'PASSWORD': 'M@12345678M@',   # Replace with your MySQL password
+        #'HOST': '127.0.0.1',           # Use 'localhost' or the IP address of your MySQL server
+        #'PORT': '3306',                # Default MySQL port
+    #}
+#}

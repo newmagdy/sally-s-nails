@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3e5ab;
+            margin: 0;
+            padding: 0;
+        }
+
+        .payment-container {
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .cart-summary {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .payment-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .visa-form {
+            display: none;
+        }
+
+        .payment-method-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <h2 class="text-center">Payment Details</h2>
+
+        <!-- Payment Form -->
+        <form method="post" action="{% url 'payment' %}" onsubmit="saveTotalPrice()">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Shipping Address</label>
+                <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter your address" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="shipping" class="form-label">Shipping Method</label>
+                <select class="form-select" id="shipping" name="shipping" required>
+                    <option value="standard">Standard Shipping</option>
+                    <option value="express">Express Shipping</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="payment-method" class="payment-method-label">Payment Method</label>
+                <select class="form-select" id="payment-method" name="payment_method" required>
+                    <option value="cod">Cash on Delivery</option>
+                    <option value="visa">Visa</option>
+                </select>
+            </div>
+
+            <div id="visa-form" class="visa-form">
+                <div class="mb-3">
+                    <label for="card-number" class="form-label">Card Number</label>
+                    <input type="text" class="form-control" id="card-number" name="card_number" placeholder="Enter your card number">
+                </div>
+                <div class="mb-3">
+                    <label for="expiration-date" class="form-label">Expiration Date</label>
+                    <input type="text" class="form-control" id="expiration-date" name="expiration_date" placeholder="MM/YY">
+                </div>
+                <div class="mb-3">
+                    <label for="cvv" class="form-label">CVV</label>
+                    <input type="text" class="form-control" id="cvv" name="cvv" placeholder="Enter your CVV">
+                </div>
+            </div>
+
+            <input type="hidden" id="hidden-total-price" name="total_price" value="">
+
+            <div class="cart-summary">
+                <h4>Cart Summary</h4>
+                <div id="cart-summary"></div>
+                <p class="text-end"><strong>Total: <span id="total-price">0</span> EGP</strong></p>
+            </div>
+
+            <div class="payment-buttons">
+                <button type="submit" class="btn btn-success w-100">Confirm Order</button>
+                <button type="button" class="btn btn-secondary w-100" onclick="goBack()">Back to Cart</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Fetch cart data from localStorage
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartSummaryContainer = document.getElementById('cart-summary');
+        const totalPriceContainer = document.getElementById('total-price');
+        const hiddenTotalPrice = document.getElementById('hidden-total-price');
+        let total = 0;
+
+        cart.forEach(item => {
+            const itemTotal = parseFloat(item.price) * parseInt(item.quantity || 1);
+            cartSummaryContainer.innerHTML += `
+                <div class="cart-item">
+                    <span>${item.name} (x${item.quantity})</span>
+                    <span>${itemTotal.toFixed(2)} EGP</span>
+                </div>
+            `;
+            total += itemTotal;
+        });
+
+        totalPriceContainer.textContent = total.toFixed(2);
+
+        // Save total price to hidden input
+        function saveTotalPrice() {
+            hiddenTotalPrice.value = total.toFixed(2);
+        }
+
+        function goBack() {
+            window.location.href = "{% url 'cart' %}";
+        }
+    </script>
+</body>
+</html>
