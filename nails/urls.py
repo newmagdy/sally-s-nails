@@ -4,6 +4,8 @@ from . import views
 from .views import home, signin, signup, signout
 #from .views import home 
 #from django.conf.urls.static import static
+from .views import order_history
+from .views import admin_orders
 
 urlpatterns = [
     
@@ -15,5 +17,7 @@ urlpatterns = [
     path('payment/', views.payment, name='payment'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),  # New product detail view
     path('measurement/', views.measurement, name='measurement'),
+    path('order-history/', views.order_history, name='order_history'),
+    path('admin/orders/', admin_orders, name='admin_orders'),
 ]
 

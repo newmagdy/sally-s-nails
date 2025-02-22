@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmed Orders</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Add your CSS file here -->
+</head>
+<body>
+    <header>
+        <h1>Confirmed Orders</h1>
+    </header>
+
+    <main>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.name }}</td>
+                    <td>{{ order.email }}</td>
+                    <td>{{ order.phone }}</td>
+                    <td>{{ order.address }}</td>
+                    <td>${{ order.total_price }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <ul>
+                            {% for item in order.items.all %}
+                            <li>{{ item.product.name }} ({{ item.quantity }}x) - ${{ item.price }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Your Company</p>
+    </footer>
+</body>
+</html>

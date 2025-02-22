@@ -112,6 +112,7 @@
             </div>
 
             <input type="hidden" id="hidden-total-price" name="total_price" value="">
+            <input type="hidden" id="cart-data" name="cart_data" value="">
 
             <div class="cart-summary">
                 <h4>Cart Summary</h4>
@@ -127,34 +128,55 @@
     </div>
 
     <script>
-        // Fetch cart data from localStorage
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const cartSummaryContainer = document.getElementById('cart-summary');
-        const totalPriceContainer = document.getElementById('total-price');
-        const hiddenTotalPrice = document.getElementById('hidden-total-price');
-        let total = 0;
-
-        cart.forEach(item => {
-            const itemTotal = parseFloat(item.price) * parseInt(item.quantity || 1);
-            cartSummaryContainer.innerHTML += `
-                <div class="cart-item">
-                    <span>${item.name} (x${item.quantity})</span>
-                    <span>${itemTotal.toFixed(2)} EGP</span>
-                </div>
-            `;
-            total += itemTotal;
-        });
-
-        totalPriceContainer.textContent = total.toFixed(2);
-
-        // Save total price to hidden input
-        function saveTotalPrice() {
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch cart data from localStorage
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const cartSummaryContainer = document.getElementById("cart-summary");
+            const totalPriceContainer = document.getElementById("total-price");
+            const hiddenTotalPrice = document.getElementById("hidden-total-price");
+            const cartDataInput = document.getElementById("cart-data");
+            let total = 0;
+    
+            cart.forEach(item => {
+                const itemTotal = parseFloat(item.price) * parseInt(item.quantity || 1);
+                cartSummaryContainer.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name} (x${item.quantity})</span>
+                        <span>${itemTotal.toFixed(2)} EGP</span>
+                    </div>
+                `;
+                total += itemTotal;
+            });
+    
+            totalPriceContainer.textContent = total.toFixed(2);
             hiddenTotalPrice.value = total.toFixed(2);
-        }
+            cartDataInput.value = JSON.stringify(cart);
+    
+            function saveTotalPrice() {
+                hiddenTotalPrice.value = total.toFixed(2);
+                cartDataInput.value = JSON.stringify(cart);
+            }
+    
+            function goBack() {
+                window.location.href = "{% url 'cart' %}";
+            }
+    
+            document.querySelector("form").addEventListener("submit", function () {
+                localStorage.removeItem("cart"); // Clear cart on successful payment
+            });
 
-        function goBack() {
-            window.location.href = "{% url 'cart' %}";
-        }
+            
+    
+            document.getElementById("payment-method").addEventListener("change", function () {
+                if (this.value === "visa") {
+                    document.getElementById("visa-form").style.display = "block";
+                } else {
+                    document.getElementById("visa-form").style.display = "none";
+                }
+            });
+        });
+        
     </script>
+    
 </body>
 </html>
